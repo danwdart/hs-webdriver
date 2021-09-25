@@ -357,6 +357,8 @@ data Cookie = Cookie { cookName   :: Text
                                                    -- cookie never expires
                      } deriving (Eq, Show)
 
+$( deriveToJSON (defaultOptions{fieldLabelModifier = map C.toLower . drop 4}) ''Cookie )
+
 -- |Creates a Cookie with only a name and value specified. All other
 -- fields are set to Nothing, which tells the server to use default values.
 mkCookie :: Text -> Text -> Cookie
@@ -816,7 +818,3 @@ instance FromJSON ApplicationCacheStatus where
 
 getApplicationCacheStatus :: (WebDriver wd) => wd ApplicationCacheStatus
 getApplicationCacheStatus = doSessCommand methodGet "/application_cache/status" Null
-
--- Moving this closer to the definition of Cookie seems to cause strange compile
--- errors, so I'm leaving it here for now.
-$( deriveToJSON (defaultOptions{fieldLabelModifier = map C.toLower . drop 4}) ''Cookie )
