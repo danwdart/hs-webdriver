@@ -27,6 +27,7 @@ import Data.Aeson
 import Data.Aeson.Types
 import Data.CallStack
 import Data.Default.Class
+import Data.HashMap.Strict
 import Data.Text (Text)
 import qualified Data.Text as T
 import Data.Typeable
@@ -38,7 +39,9 @@ newtype Element = Element Text
                   deriving (Eq, Ord, Show, Read)
 
 instance FromJSON Element where
-  parseJSON (Object o) = Element <$> (o .: "ELEMENT" <|> o .: "element-6066-11e4-a52e-4f735466cecf")
+  parseJSON (Object o) = case elems o of
+    (String id : _) -> pure $ Element id
+    _ -> fail "No elements returned"
   parseJSON v = typeMismatch "Element" v
 
 instance ToJSON Element where
@@ -100,7 +103,14 @@ doElemCommand m (Element e) path a =
 -- For example, passing a URL of \"/size\" will expand to
 -- \"/session/:sessionId/window/:windowHandle/\", where :sessionId and
 -- :windowHandle are URL parameters as described in the wire protocol
+<<<<<<< HEAD
 doWinCommand :: (HasCallStack, WebDriver wd, ToJSON a, FromJSON b) =>
                  Method -> WindowHandle -> Text -> a -> wd b
 doWinCommand m (WindowHandle w) path a =
   doSessCommand m (T.concat ["/window/", urlEncode w, path]) a
+=======
+doWinCommand :: (WebDriver wd, ToJSON a, FromJSON b) =>
+                 Method -> Text -> a -> wd b
+doWinCommand m path a =
+  doSessCommand m (T.concat ["/window/", path]) a
+>>>>>>> capital/master
