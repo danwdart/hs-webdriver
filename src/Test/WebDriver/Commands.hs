@@ -128,6 +128,9 @@ closeSession = do s@WDSession {..} <- getSession
                   noReturn $ doSessCommand methodDelete "" Null
                   putSession s { wdSessId = Nothing }
 
+-- Selenium 3.x doesn't seem to like receiving Null for click parameter
+noObject :: Value
+noObject = Object mempty
 
 -- |Sets the amount of time (ms) we implicitly wait when searching for elements.
 setImplicitWait :: (HasCallStack, WebDriver wd) => Integer -> wd ()
@@ -466,10 +469,6 @@ findElemsFrom e = doElemCommand methodPost e "/elements"
 elemInfo :: (HasCallStack, WebDriver wd) => Element -> wd Value
 elemInfo e = doElemCommand methodGet e "" Null
 {-# DEPRECATED elemInfo "This command does not work with Marionette (Firefox) driver, and is likely to be completely removed in Selenium 4" #-}
-
--- Selenium 3.x doesn't seem to like receiving Null for click parameter
-noObject :: Value
-noObject = Object mempty
 
 -- |Click on an element.
 click :: (HasCallStack, WebDriver wd) => Element -> wd ()
