@@ -1,4 +1,7 @@
-{-# LANGUAGE OverloadedStrings, DeriveDataTypeable, GeneralizedNewtypeDeriving, ScopedTypeVariables #-}
+{-# LANGUAGE DeriveDataTypeable         #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE OverloadedStrings          #-}
+{-# LANGUAGE ScopedTypeVariables        #-}
 {-# OPTIONS_HADDOCK not-home #-}
 -- |Internal functions used to implement the functions exported by
 -- "Test.WebDriver.Commands". These may be useful for implementing non-standard
@@ -16,23 +19,23 @@ module Test.WebDriver.Commands.Internal
        , NoSessionId(..)
        ) where
 
-import Test.WebDriver.Class
-import Test.WebDriver.JSON
-import Test.WebDriver.Session
-import Test.WebDriver.Utils (urlEncode)
+import           Test.WebDriver.Class
+import           Test.WebDriver.JSON
+import           Test.WebDriver.Session
+import           Test.WebDriver.Utils     (urlEncode)
 
-import Control.Applicative
-import Control.Exception.Lifted
-import Data.Aeson
-import Data.Aeson.Types
-import Data.CallStack
-import Data.Default.Class
-import Data.HashMap.Strict
-import Data.Text (Text)
-import qualified Data.Text as T
-import Data.Typeable
+import           Control.Applicative
+import           Control.Exception.Lifted
+import           Data.Aeson
+import           Data.Aeson.Types
+import           Data.CallStack
+import           Data.Default.Class
+import           Data.HashMap.Strict
+import           Data.Text                (Text)
+import qualified Data.Text                as T
+import           Data.Typeable
 
-import Prelude -- hides some "unused import" warnings
+import           Prelude
 
 {- |An opaque identifier for a web page element. -}
 newtype Element = Element Text
@@ -41,7 +44,7 @@ newtype Element = Element Text
 instance FromJSON Element where
   parseJSON (Object o) = case elems o of
     (String id : _) -> pure $ Element id
-    _ -> fail "No elements returned"
+    _               -> fail "No elements returned"
   parseJSON v = typeMismatch "Element" v
 
 instance ToJSON Element where
